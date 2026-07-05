@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; max-width: 820px; color: #3a3a3a; line-height: 1.6; background: #ffffff; }
+
+  /* ── HEADER ── */
+  .page-header { background: #ffffff; padding: 28px 26px 20px 26px; border-bottom: 1px solid #e5e1dc; }
+  .header-inner { border-left: 3px solid #811429; padding-left: 16px; }
+  .header-meta { font-size: 10px; color: #999999; margin: 0 0 8px 0; }
+  .header-title { font-size: 22px; color: #1a1a1a; margin: 0; line-height: 1.3; }
+
+  /* ── BODY ── */
+  .body { padding: 28px 26px 48px 26px; }
+
+  .intro { font-size: 15px; line-height: 1.8; color: #3a3a3a; margin: 0 0 32px 0; }
+
+  /* ── SECTION LABEL ── */
+  .section-label { font-size: 10px; color: #999999; margin: 40px 0 14px 0; padding-bottom: 8px; border-bottom: 1px solid #e5e1dc; }
+
+  /* ── MILESTONE CARD ── */
+  .milestone-card { border-left: 3px solid #811429; padding: 16px 20px; margin: 0 0 32px 0; background: #faf8f6; }
+  .milestone-num { font-size: 10px; color: #999999; margin: 0 0 6px 0; }
+  .milestone-title { font-size: 16px; font-weight: bold; color: #811429; margin: 0 0 10px 0; }
+  .milestone-body { font-size: 14px; color: #3a3a3a; line-height: 1.75; }
+
+  /* ── EXAMPLE BOX ── */
+  .example-box { background: #ffffff; border: 1px solid #e5e1dc; padding: 16px 18px; margin: 16px 0; border-radius: 2px; }
+  .example-label { font-size: 10px; color: #999999; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
+  .example-text { font-size: 13.5px; color: #3a3a3a; line-height: 1.7; }
+  .example-text em { color: #811429; font-style: normal; font-weight: bold; }
+
+  /* ── PILL TAG ── */
+  .pill { display: inline-block; font-size: 9px; color: #999999; background: #eeebe7; padding: 2px 7px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+
+  /* ── INTERACTIVE: OPERATIONALIZATION BUILDER ── */
+  .interactive-box { background: #ffffff; border: 1px solid #e5e1dc; padding: 20px 22px; margin: 20px 0; border-radius: 2px; }
+  .interactive-title { font-size: 13px; font-weight: bold; color: #1a1a1a; margin: 0 0 4px 0; }
+  .interactive-sub { font-size: 12px; color: #999999; margin: 0 0 16px 0; }
+  .field-label { font-size: 11px; color: #811429; font-weight: bold; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+  .field-input { width: 100%; padding: 9px 12px; border: 1px solid #e0d0d3; border-radius: 2px; font-family: Arial, sans-serif; font-size: 13px; color: #3a3a3a; background: #faf8f6; resize: vertical; margin: 0 0 14px 0; }
+  .field-input:focus { outline: none; border-color: #811429; background: #ffffff; }
+  .field-hint { font-size: 11px; color: #aaaaaa; margin: -10px 0 14px 0; font-style: italic; }
+
+  .btn { display: inline-block; background: #811429; color: #ffffff; font-size: 13px; font-weight: bold; padding: 9px 20px; border: none; border-radius: 2px; cursor: pointer; font-family: Arial, sans-serif; }
+  .btn:hover { background: #6a1022; }
+  .btn-secondary { background: #eeebe7; color: #3a3a3a; margin-left: 8px; }
+  .btn-secondary:hover { background: #e0dbd6; }
+
+  .output-box { display: none; background: #f0f4f0; border: 1px solid #c4d6c4; padding: 14px 16px; margin: 14px 0 0 0; border-radius: 2px; font-size: 13px; color: #2a4a2a; line-height: 1.75; }
+  .output-box strong { color: #1a3a1a; }
+
+  /* ── PURPOSE STATEMENT TEMPLATE ── */
+  .template-box { background: #faf8f6; border: 1px solid #e5e1dc; padding: 18px 20px; margin: 16px 0; border-radius: 2px; }
+  .template-text { font-size: 14px; line-height: 2.1; color: #3a3a3a; }
+  .blank { display: inline-block; min-width: 140px; border-bottom: 2px solid #811429; padding: 0 4px; margin: 0 2px; color: #811429; font-style: italic; font-size: 13px; background: transparent; border-top: none; border-left: none; border-right: none; font-family: Arial, sans-serif; vertical-align: bottom; }
+  .blank:focus { outline: none; background: #fff8f8; }
+  .blank::placeholder { color: #ccaaaa; font-style: italic; }
+
+  .model-toggle { font-size: 13px; color: #811429; text-decoration: underline; cursor: pointer; margin: 8px 0 0 0; display: inline-block; }
+  .model-example { display: none; margin: 12px 0 0 0; }
+
+  /* ── SCALE FINDER ── */
+  .scale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .scale-card { background: #ffffff; border: 1px solid #e5e1dc; padding: 14px 16px; border-radius: 2px; cursor: pointer; transition: border-color 0.15s; }
+  .scale-card:hover { border-color: #811429; }
+  .scale-card.selected { border-color: #811429; background: #faf8f6; }
+  .scale-name { font-size: 13px; font-weight: bold; color: #811429; margin: 0 0 4px 0; }
+  .scale-constructs { font-size: 11px; color: #666666; margin: 0 0 6px 0; }
+  .scale-detail { display: none; font-size: 12px; color: #3a3a3a; line-height: 1.65; border-top: 1px solid #e5e1dc; padding-top: 8px; margin-top: 8px; }
+  .scale-card.selected .scale-detail { display: block; }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; padding: 0; margin: 12px 0 0 0; }
+  .checklist li { font-size: 14px; color: #3a3a3a; line-height: 1.8; padding: 6px 0; border-bottom: 1px solid #f0ece8; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box { width: 18px; height: 18px; border: 2px solid #c9a84c; border-radius: 2px; flex-shrink: 0; margin-top: 3px; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .check-box.checked { background: #811429; border-color: #811429; }
+  .check-box.checked::after { content: '✓'; color: white; font-size: 11px; font-weight: bold; }
+  .checklist li.done .check-text { text-decoration: line-through; color: #999999; }
+
+  /* ── LOOKING AHEAD ── */
+  .looking-ahead { font-size: 13px; line-height: 1.7; color: #666666; border-top: 1px solid #e5e1dc; padding-top: 16px; margin: 40px 0 0 0; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { margin: 0 0 28px 0; }
+  .progress-label { font-size: 11px; color: #999999; margin: 0 0 6px 0; display: flex; justify-content: space-between; }
+  .progress-bar { height: 6px; background: #eeebe7; border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #811429; border-radius: 3px; width: 0%; transition: width 0.4s ease; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="header-inner">
+    <p class="header-meta">Week 5 &nbsp;&middot;&nbsp; HMSC 5063-91 &nbsp;&middot;&nbsp; Research Methods in Human Sciences</p>
+    <h2 class="header-title">Milestone Guide: Measurement and Your Proposal</h2>
+  </div>
+</div>
+
+<div class="body">
+
+  <p class="intro">This page walks you through each of this week's four milestones. For each one you will find guidance, a worked example, and a place to practice. Work through them in order. By the time you post in the discussion forum, you should have a concrete draft of each piece.</p>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Your progress this week</span>
+      <span id="progress-pct">0 of 4 milestones</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <!-- ── MILESTONE 1 ── -->
+  <p class="section-label">Milestone 1</p>
+  <div class="milestone-card">
+    <p class="milestone-num">What you need to do</p>
+    <p class="milestone-title">Operationalize your key variables</p>
+    <p class="milestone-body">Write precise definitions of each construct in your study as it will actually be measured. Not what it means in theory — how you will capture it in data.</p>
+  </div>
+
+  <p style="font-size:14px;color:#3a3a3a;line-height:1.75;margin:0 0 14px 0;">Every construct in your study needs two definitions: a <strong>conceptual definition</strong> (what it means in theory) and an <strong>operational definition</strong> (exactly how you will measure it). Here is the difference:</p>
+
+  <div class="example-box">
+    <p class="example-label">Example: Relationship Satisfaction</p>
+    <p class="example-text" style="margin:0 0 10px 0;"><em>Conceptual:</em> Relationship satisfaction is a person's overall subjective evaluation of their romantic partnership, including perceptions of closeness, communication quality, and commitment.</p>
+    <p class="example-text"><em>Operational:</em> Relationship satisfaction will be measured using the Relationship Assessment Scale (RAS; Hendrick, 1988), a 7-item self-report instrument scored on a 5-point Likert scale (1 = low satisfaction, 5 = high satisfaction). Total scores range from 7 to 35, with higher scores indicating greater satisfaction.</p>
+  </div>
+
+  <p style="font-size:14px;color:#3a3a3a;line-height:1.75;margin:0 0 16px 0;">Now try it for your own study. Fill in the fields below for one of your key constructs.</p>
+
+  <div class="interactive-box">
+    <p class="interactive-title">Operationalization Builder</p>
+    <p class="interactive-sub">Complete all three fields, then click Generate to see your draft operational definition.</p>
+
+    <p class="field-label">Your Construct</p>
+    <input type="text" class="field-input" id="construct-name" placeholder="e.g., Parenting Stress" style="height:42px;resize:none;">
+    <p class="field-hint">Name the abstract idea you are studying.</p>
+
+    <p class="field-label">Conceptual Definition</p>
+    <textarea class="field-input" id="conceptual-def" rows="3" placeholder="In your own words, what does this construct mean in theory?"></textarea>
+    <p class="field-hint">Think: what would a dictionary of psychology say about this concept?</p>
+
+    <p class="field-label">How You Will Measure It</p>
+    <textarea class="field-input" id="operational-how" rows="3" placeholder="e.g., a validated 18-item survey scored 1 to 5, with higher scores indicating greater stress"></textarea>
+    <p class="field-hint">Name the specific scale, number of items, response format, and scoring direction.</p>
+
+    <button class="btn" onclick="generateOperational()">Generate My Definition</button>
+    <button class="btn btn-secondary" onclick="clearOperational()">Clear</button>
+
+    <div class="output-box" id="op-output"></div>
+  </div>
+
+  <!-- ── MILESTONE 2 ── -->
+  <p class="section-label">Milestone 2</p>
+  <div class="milestone-card">
+    <p class="milestone-num">What you need to do</p>
+    <p class="milestone-title">Write a clear, APA formatted Purpose Statement</p>
+    <p class="milestone-body">One or two sentences that announce what your study intends to investigate, who the participants are, and what the key variables are. This sentence goes near the end of your Introduction section.</p>
+  </div>
+
+  <p style="font-size:14px;color:#3a3a3a;line-height:1.75;margin:0 0 14px 0;">A purpose statement follows a predictable structure in APA writing. Shehzad (2011) identifies three moves: announcing the intent, naming the variables or phenomena, and identifying the population. Use the template below to draft yours.</p>
+
+  <div class="template-box">
+    <p class="example-label">Fill in the Blanks</p>
+    <p class="template-text">
+      The purpose of this
+      <input class="blank" id="ps-design" placeholder="qualitative / quantitative / mixed methods" size="18">
+      study is to
+      <input class="blank" id="ps-verb" placeholder="examine / explore / compare / investigate" size="16">
+      <input class="blank" id="ps-variable1" placeholder="your key construct or variable" size="22">
+      and its relationship to
+      <input class="blank" id="ps-variable2" placeholder="second construct or outcome" size="22">
+      among
+      <input class="blank" id="ps-population" placeholder="your target population" size="20">.
+    </p>
+  </div>
+
+  <button class="btn" onclick="generatePurpose()" style="margin:0 0 8px 0;">Build My Purpose Statement</button>
+  <div class="output-box" id="ps-output"></div>
+
+  <p class="model-toggle" onclick="toggleModel()">See a model example &darr;</p>
+  <div class="model-example" id="model-example">
+    <div class="example-box">
+      <p class="example-label">Model Purpose Statement</p>
+      <p class="example-text">The purpose of this quantitative study is to examine parenting stress and its relationship to child behavioral outcomes among parents of children with autism spectrum disorder between the ages of 3 and 12 years.</p>
+      <p style="font-size:12px;color:#999999;margin:10px 0 0 0;font-style:italic;">Notice: design type named, key variables named, population clearly identified, written as a single declarative sentence.</p>
+    </div>
+  </div>
+
+  <!-- ── MILESTONE 3 ── -->
+  <p class="section-label">Milestone 3</p>
+  <div class="milestone-card">
+    <p class="milestone-num">What you need to do</p>
+    <p class="milestone-title">Continue building your literature base</p>
+    <p class="milestone-body">Keep reading sources closely and taking detailed notes. By the end of this week you should have 12 to 15 peer reviewed sources collected and at least 8 read closely enough to summarize.</p>
+  </div>
+
+  <p style="font-size:14px;color:#3a3a3a;line-height:1.75;margin:0 0 14px 0;">Reading closely means more than skimming the abstract. For each article you plan to cite, you should be able to answer these four questions:</p>
+
+  <div class="example-box">
+    <p class="example-label">Four Questions for Every Source</p>
+    <p class="example-text" style="margin:0 0 8px 0;"><em>1. What did they study?</em> &mdash; population, design, key variables</p>
+    <p class="example-text" style="margin:0 0 8px 0;"><em>2. What did they find?</em> &mdash; key results in plain language</p>
+    <p class="example-text" style="margin:0 0 8px 0;"><em>3. What does it mean for my study?</em> &mdash; how it informs your research question</p>
+    <p class="example-text"><em>4. What theme does it belong to?</em> &mdash; which section of your literature review will it anchor?</p>
+  </div>
+
+  <p style="font-size:14px;color:#3a3a3a;line-height:1.75;margin:14px 0 6px 0;">Track your progress here:</p>
+  <div class="interactive-box" style="padding:16px 20px;">
+    <p class="interactive-title">Literature Tracker</p>
+    <p class="interactive-sub">Click each item as you complete it.</p>
+    <ul class="checklist" id="lit-checklist">
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">I have collected 12 or more peer reviewed sources on my topic</span></li>
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">I have read at least 8 sources closely enough to summarize in one paragraph</span></li>
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">I have begun grouping sources by theme (not by article)</span></li>
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">I can name 2 to 3 themes emerging across my sources</span></li>
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">I know which sources will anchor each theme in my literature review</span></li>
+    </ul>
+  </div>
+
+  <!-- ── MILESTONE 4 ── -->
+  <p class="section-label">Milestone 4</p>
+  <div class="milestone-card">
+    <p class="milestone-num">What you need to do</p>
+    <p class="milestone-title">Know which scales you plan to use and why</p>
+    <p class="milestone-body">Before Week 7's instrument building week, you need to identify at least two validated scales for your key variables and be able to justify why each one fits your study.</p>
+  </div>
+
+  <p style="font-size:14px;color:#3a3a3a;line-height:1.75;margin:0 0 14px 0;">A validated scale is one that has published evidence for its reliability and validity. Below are some commonly used scales in MFT and human sciences research. Click any card to see details. This is not an exhaustive list — use it as a starting point, then search PsycTests or the original articles in your topic area.</p>
+
+  <div class="scale-grid">
+    <div class="scale-card" onclick="toggleScale(this)">
+      <p class="scale-name">Dyadic Adjustment Scale (DAS)</p>
+      <p class="scale-constructs">Constructs: Relationship quality, dyadic consensus, satisfaction</p>
+      <div class="scale-detail">
+        <strong>Items:</strong> 32 items &nbsp;&bull;&nbsp; <strong>Format:</strong> Mixed response formats<br>
+        <strong>Population:</strong> Married and cohabiting couples<br>
+        <strong>Citation:</strong> Spanier (1976). Journal of Marriage and the Family.<br>
+        <strong>Note:</strong> One of the most widely used couple measures in MFT research.
+      </div>
+    </div>
+    <div class="scale-card" onclick="toggleScale(this)">
+      <p class="scale-name">Relationship Assessment Scale (RAS)</p>
+      <p class="scale-constructs">Constructs: Relationship satisfaction</p>
+      <div class="scale-detail">
+        <strong>Items:</strong> 7 items &nbsp;&bull;&nbsp; <strong>Format:</strong> 5-point Likert<br>
+        <strong>Population:</strong> Adults in romantic relationships<br>
+        <strong>Citation:</strong> Hendrick (1988). Journal of Marriage and the Family.<br>
+        <strong>Note:</strong> Brief and widely validated. Good choice for survey research.
+      </div>
+    </div>
+    <div class="scale-card" onclick="toggleScale(this)">
+      <p class="scale-name">Experiences in Close Relationships (ECR)</p>
+      <p class="scale-constructs">Constructs: Attachment anxiety, attachment avoidance</p>
+      <div class="scale-detail">
+        <strong>Items:</strong> 36 items &nbsp;&bull;&nbsp; <strong>Format:</strong> 7-point Likert<br>
+        <strong>Population:</strong> Adults in romantic relationships<br>
+        <strong>Citation:</strong> Brennan, Clark, and Shaver (1998).<br>
+        <strong>Note:</strong> Strong psychometric evidence across many samples. ECR-R is a revised version.
+      </div>
+    </div>
+    <div class="scale-card" onclick="toggleScale(this)">
+      <p class="scale-name">Parenting Stress Index (PSI)</p>
+      <p class="scale-constructs">Constructs: Parenting stress, parent-child relationship stress</p>
+      <div class="scale-detail">
+        <strong>Items:</strong> 120 items (short form: 36) &nbsp;&bull;&nbsp; <strong>Format:</strong> 5-point Likert<br>
+        <strong>Population:</strong> Parents of children ages 0 to 12<br>
+        <strong>Citation:</strong> Abidin (1995).<br>
+        <strong>Note:</strong> Well validated for clinical and research use. Short form widely used.
+      </div>
+    </div>
+    <div class="scale-card" onclick="toggleScale(this)">
+      <p class="scale-name">PHQ-9 (Patient Health Questionnaire)</p>
+      <p class="scale-constructs">Constructs: Depression severity</p>
+      <div class="scale-detail">
+        <strong>Items:</strong> 9 items &nbsp;&bull;&nbsp; <strong>Format:</strong> 4-point frequency scale<br>
+        <strong>Population:</strong> General adult population; widely used in clinical settings<br>
+        <strong>Citation:</strong> Kroenke, Spitzer, and Williams (2001). Journal of General Internal Medicine.<br>
+        <strong>Note:</strong> Free to use. Excellent psychometric properties across diverse samples.
+      </div>
+    </div>
+    <div class="scale-card" onclick="toggleScale(this)">
+      <p class="scale-name">GAD-7 (Generalized Anxiety Disorder Scale)</p>
+      <p class="scale-constructs">Constructs: Anxiety severity</p>
+      <div class="scale-detail">
+        <strong>Items:</strong> 7 items &nbsp;&bull;&nbsp; <strong>Format:</strong> 4-point frequency scale<br>
+        <strong>Population:</strong> General adult population<br>
+        <strong>Citation:</strong> Spitzer et al. (2006). Archives of Internal Medicine.<br>
+        <strong>Note:</strong> Free to use. Widely validated companion to the PHQ-9.
+      </div>
+    </div>
+    <div class="scale-card" onclick="toggleScale(this)">
+      <p class="scale-name">Family Assessment Device (FAD)</p>
+      <p class="scale-constructs">Constructs: Family functioning, problem solving, communication, roles</p>
+      <div class="scale-detail">
+        <strong>Items:</strong> 60 items &nbsp;&bull;&nbsp; <strong>Format:</strong> 4-point Likert<br>
+        <strong>Population:</strong> Family members age 12 and older<br>
+        <strong>Citation:</strong> Epstein, Baldwin, and Bishop (1983).<br>
+        <strong>Note:</strong> Based on the McMaster Model of Family Functioning. Subscales can be used independently.
+      </div>
+    </div>
+    <div class="scale-card" onclick="toggleScale(this)">
+      <p class="scale-name">OLSAT / FACES (Cohesion and Flexibility)</p>
+      <p class="scale-constructs">Constructs: Family cohesion, family flexibility</p>
+      <div class="scale-detail">
+        <strong>Items:</strong> 20 items (FACES-IV) &nbsp;&bull;&nbsp; <strong>Format:</strong> 5-point Likert<br>
+        <strong>Population:</strong> Adolescents and adults<br>
+        <strong>Citation:</strong> Olson (2011). Journal of Marital and Family Therapy.<br>
+        <strong>Note:</strong> Based on the Circumplex Model. FACES-IV addresses earlier limitations of FACES-III.
+      </div>
+    </div>
+  </div>
+
+  <div class="example-box" style="margin:20px 0 0 0;">
+    <p class="example-label">How to justify your scale choice</p>
+    <p class="example-text" style="margin:0 0 10px 0;">When you write your Measurement Rationale in Week 7, for each scale you need to answer four questions:</p>
+    <p class="example-text" style="margin:0 0 6px 0;"><em>1. Why this scale?</em> &mdash; How does it match your construct and research question?</p>
+    <p class="example-text" style="margin:0 0 6px 0;"><em>2. What is the reliability evidence?</em> &mdash; Report Cronbach's alpha or test-retest reliability from the original validation paper.</p>
+    <p class="example-text" style="margin:0 0 6px 0;"><em>3. What is the validity evidence?</em> &mdash; What types of validity have been established? (Construct, content, criterion?)</p>
+    <p class="example-text"><em>4. How will you score it?</em> &mdash; Sum the items? Reverse score any? What does a high score mean?</p>
+  </div>
+
+  <!-- ── BEFORE YOU POST ── -->
+  <p class="section-label" style="margin-top:40px;">Before You Post in the Discussion Forum</p>
+  <div style="border-left: 3px solid #c9a84c; padding: 14px 18px; background: #faf8f6; margin: 0 0 20px 0;">
+    <p style="font-size: 10px; color: #999999; margin: 0 0 12px 0;">Your discussion post this week should include all four of these</p>
+    <ul class="checklist" id="post-checklist">
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">A conceptual and operational definition for at least one key construct</span></li>
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Your drafted Purpose Statement</span></li>
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">A brief update on your literature base (how many sources, what themes are emerging)</span></li>
+      <li onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">The scales you are planning to use and a one sentence justification for each</span></li>
+    </ul>
+  </div>
+
+  <!-- LOOKING AHEAD -->
+  <p class="looking-ahead"><em><span style="font-size:10px;color:#999999;">Looking Ahead&nbsp;&nbsp;</span>Week 6 covers reliability and validity in depth, and your Literature Review is due at the end of the week. If your sources are organized and your themes are taking shape, you will be ready. Week 7 is the applied instrument building week — come in knowing your scales.</em></p>
+
+</div>
+
+<script>
+// ── OPERATIONALIZATION BUILDER ─────────────────────────────────────
+function generateOperational() {
+  const name = document.getElementById('construct-name').value.trim();
+  const conceptual = document.getElementById('conceptual-def').value.trim();
+  const how = document.getElementById('operational-how').value.trim();
+  const out = document.getElementById('op-output');
+
+  if (!name || !conceptual || !how) {
+    out.style.display = 'block';
+    out.style.background = '#fff8f0';
+    out.style.borderColor = '#e0c4a0';
+    out.style.color = '#8a5a1a';
+    out.innerHTML = 'Please fill in all three fields before generating.';
+    return;
+  }
+
+  out.style.display = 'block';
+  out.style.background = '#f0f4f0';
+  out.style.borderColor = '#c4d6c4';
+  out.style.color = '#2a4a2a';
+  out.innerHTML =
+    '<strong>Conceptual Definition:</strong> ' + name + ' refers to ' + conceptual +
+    '<br><br><strong>Operational Definition:</strong> ' + name + ' will be measured using ' + how + '.';
+  updateProgress();
+}
+
+function clearOperational() {
+  document.getElementById('construct-name').value = '';
+  document.getElementById('conceptual-def').value = '';
+  document.getElementById('operational-how').value = '';
+  document.getElementById('op-output').style.display = 'none';
+}
+
+// ── PURPOSE STATEMENT BUILDER ──────────────────────────────────────
+function generatePurpose() {
+  const design = document.getElementById('ps-design').value.trim() || '[design type]';
+  const verb = document.getElementById('ps-verb').value.trim() || '[verb]';
+  const v1 = document.getElementById('ps-variable1').value.trim() || '[first variable]';
+  const v2 = document.getElementById('ps-variable2').value.trim() || '[second variable]';
+  const pop = document.getElementById('ps-population').value.trim() || '[population]';
+  const out = document.getElementById('ps-output');
+
+  out.style.display = 'block';
+  out.style.background = '#f0f4f0';
+  out.style.borderColor = '#c4d6c4';
+  out.style.color = '#2a4a2a';
+  out.innerHTML =
+    '<strong>Your Purpose Statement Draft:</strong><br><br>' +
+    'The purpose of this <strong>' + design + '</strong> study is to <strong>' + verb + '</strong> ' +
+    '<strong>' + v1 + '</strong> and its relationship to <strong>' + v2 + '</strong> among ' +
+    '<strong>' + pop + '</strong>.';
+  updateProgress();
+}
+
+// ── MODEL EXAMPLE TOGGLE ───────────────────────────────────────────
+function toggleModel() {
+  const el = document.getElementById('model-example');
+  const toggle = document.querySelector('.model-toggle');
+  if (el.style.display === 'block') {
+    el.style.display = 'none';
+    toggle.innerHTML = 'See a model example &darr;';
+  } else {
+    el.style.display = 'block';
+    toggle.innerHTML = 'Hide model example &uarr;';
+  }
+}
+
+// ── SCALE CARDS ───────────────────────────────────────────────────
+function toggleScale(el) {
+  const wasSelected = el.classList.contains('selected');
+  document.querySelectorAll('.scale-card').forEach(c => c.classList.remove('selected'));
+  if (!wasSelected) el.classList.add('selected');
+}
+
+// ── CHECKLIST ─────────────────────────────────────────────────────
+function toggleCheck(li) {
+  const box = li.querySelector('.check-box');
+  box.classList.toggle('checked');
+  li.classList.toggle('done');
+  updateProgress();
+}
+
+// ── PROGRESS ──────────────────────────────────────────────────────
+function updateProgress() {
+  const opDone = document.getElementById('op-output').style.display === 'block' &&
+                 document.getElementById('op-output').style.background === 'rgb(240, 244, 240)';
+  const psDone = document.getElementById('ps-output').style.display === 'block';
+
+  const litChecks = document.querySelectorAll('#lit-checklist .check-box.checked').length;
+  const postChecks = document.querySelectorAll('#post-checklist .check-box.checked').length;
+
+  let done = 0;
+  if (opDone) done++;
+  if (psDone) done++;
+  if (litChecks >= 3) done++;
+  if (postChecks >= 3) done++;
+
+  const pct = Math.round((done / 4) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = done + ' of 4 milestones';
+}
+</script>
+
+</body>
+</html>
