@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Literature Review Builder | HMSC 5063</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f5f3f1; color: #3a3a3a; min-height: 100vh; }
+
+  .page-header { background: #811429; padding: 22px 28px; }
+  .header-meta { font-size: 11px; color: #c9a84c; margin: 0 0 6px 0; letter-spacing: 1px; text-transform: uppercase; }
+  .header-title { font-size: 24px; color: #ffffff; font-family: Georgia, serif; font-weight: bold; margin: 0 0 4px 0; }
+  .header-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; }
+
+  .tab-bar { background: #6a1022; display: flex; padding: 0 28px; }
+  .tab { padding: 12px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; }
+  .tab.active { color: #ffffff; border-bottom-color: #c9a84c; }
+  .tab:hover { color: #ffffff; }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 28px 20px; }
+
+  /* ── CARDS ── */
+  .card { background: #ffffff; border: 1px solid #e5e1dc; border-radius: 3px; padding: 22px 24px; margin: 0 0 20px 0; }
+  .card-title { font-size: 15px; font-weight: bold; color: #811429; font-family: Georgia, serif; margin: 0 0 6px 0; }
+  .card-sub { font-size: 12px; color: #999999; margin: 0 0 16px 0; }
+
+  /* ── FORM ELEMENTS ── */
+  label { font-size: 11px; color: #811429; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin: 0 0 5px 0; }
+  input[type="text"], textarea, select { width: 100%; padding: 9px 12px; border: 1px solid #e0d0d3; border-radius: 2px; font-family: Arial, sans-serif; font-size: 13px; color: #3a3a3a; background: #faf8f6; margin: 0 0 14px 0; }
+  input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: #811429; background: #ffffff; }
+  textarea { resize: vertical; }
+  .hint { font-size: 11px; color: #aaaaaa; margin: -10px 0 14px 0; font-style: italic; }
+
+  .btn { display: inline-block; background: #811429; color: #ffffff; font-size: 13px; font-weight: bold; padding: 9px 20px; border: none; border-radius: 2px; cursor: pointer; font-family: Arial, sans-serif; }
+  .btn:hover { background: #6a1022; }
+  .btn-secondary { background: #eeebe7; color: #3a3a3a; }
+  .btn-secondary:hover { background: #e0dbd6; }
+  .btn-gold { background: #c9a84c; color: #ffffff; }
+  .btn-gold:hover { background: #b8943d; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  .btn-danger { background: #cc4444; color: #ffffff; }
+  .btn-danger:hover { background: #aa3333; }
+
+  /* ── SOURCE LIST ── */
+  .source-item { background: #faf8f6; border: 1px solid #e5e1dc; border-radius: 2px; padding: 14px 16px; margin: 0 0 10px 0; position: relative; }
+  .source-title { font-size: 13px; font-weight: bold; color: #1a1a1a; margin: 0 0 4px 0; }
+  .source-meta { font-size: 12px; color: #666666; margin: 0 0 6px 0; }
+  .source-theme { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; color: #ffffff; font-weight: bold; }
+  .source-actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; }
+  .empty-state { text-align: center; padding: 40px 20px; color: #999999; font-size: 14px; border: 2px dashed #e5e1dc; border-radius: 3px; }
+
+  /* ── THEME BUILDER ── */
+  .theme-item { background: #ffffff; border: 1px solid #e5e1dc; border-radius: 2px; margin: 0 0 16px 0; overflow: hidden; }
+  .theme-header { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .theme-color-dot { width: 14px; height: 14px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .theme-name { font-size: 14px; font-weight: bold; color: #1a1a1a; flex: 1; }
+  .theme-count { font-size: 12px; color: #999999; margin-right: 12px; }
+  .theme-body { padding: 0 16px 16px 16px; border-top: 1px solid #e5e1dc; display: none; }
+  .theme-body.open { display: block; padding-top: 14px; }
+  .theme-sources { margin: 0 0 12px 0; }
+  .theme-source-chip { display: inline-block; background: #f0ece8; border: 1px solid #e5e1dc; border-radius: 2px; padding: 3px 8px; font-size: 12px; color: #3a3a3a; margin: 3px 3px 3px 0; }
+
+  /* ── OUTLINE BUILDER ── */
+  .outline-section { background: #faf8f6; border-left: 3px solid #811429; padding: 14px 18px; margin: 0 0 16px 0; }
+  .outline-section-title { font-size: 14px; font-weight: bold; color: #811429; margin: 0 0 8px 0; }
+  .outline-content { font-size: 13px; color: #3a3a3a; line-height: 1.7; white-space: pre-wrap; }
+
+  .output-box { background: #f0f4f0; border: 1px solid #c4d6c4; padding: 16px 18px; border-radius: 2px; font-size: 13px; color: #2a4a2a; line-height: 1.75; margin: 14px 0; display: none; }
+
+  /* ── PROGRESS ── */
+  .progress-row { display: flex; align-items: center; gap: 12px; margin: 0 0 10px 0; }
+  .progress-label-txt { font-size: 12px; color: #666666; width: 160px; flex-shrink: 0; }
+  .progress-bar-wrap { flex: 1; height: 8px; background: #eeebe7; border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: #811429; border-radius: 4px; transition: width 0.4s ease; }
+  .progress-num { font-size: 12px; color: #811429; font-weight: bold; width: 40px; text-align: right; }
+
+  /* ── TABS ── */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── MODAL ── */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #ffffff; border-radius: 4px; padding: 28px; max-width: 540px; width: 90%; max-height: 90vh; overflow-y: auto; }
+  .modal-title { font-size: 17px; font-weight: bold; color: #811429; font-family: Georgia, serif; margin: 0 0 20px 0; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+  /* ── THEME COLORS ── */
+  .tc-0 { background: #811429; }
+  .tc-1 { background: #1a5c9b; }
+  .tc-2 { background: #1a7a3a; }
+  .tc-3 { background: #9b4b1a; }
+  .tc-4 { background: #6a1a9b; }
+
+  .divider { border: none; border-top: 1px solid #e5e1dc; margin: 20px 0; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  .badge { display: inline-block; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; margin-left: 6px; }
+  .badge-green { background: #d4edda; color: #1a5a2a; }
+  .badge-red { background: #fde8e8; color: #811429; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <p class="header-meta">HMSC 5063-91 &nbsp;&bull;&nbsp; Week 6</p>
+  <p class="header-title">Literature Review Builder</p>
+  <p class="header-sub">Organize your sources, map your themes, and build your argument before you write.</p>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('sources')">Sources</div>
+  <div class="tab" onclick="switchTab('themes')">Themes</div>
+  <div class="tab" onclick="switchTab('outline')">Outline</div>
+  <div class="tab" onclick="switchTab('progress')">Progress</div>
+</div>
+
+<!-- ── TAB 1: SOURCES ── -->
+<div class="tab-content active" id="tab-sources">
+  <div class="container">
+
+    <div class="card">
+      <p class="card-title">Add a Source</p>
+      <p class="card-sub">Enter each peer-reviewed article you plan to cite. You can assign it to a theme and note how it fits your argument.</p>
+
+      <div class="two-col">
+        <div>
+          <label>Author(s) and Year</label>
+          <input type="text" id="src-author" placeholder="e.g., Smith et al. (2019)">
+        </div>
+        <div>
+          <label>Article Title</label>
+          <input type="text" id="src-title" placeholder="e.g., Attachment and relationship quality...">
+        </div>
+      </div>
+
+      <label>Journal</label>
+      <input type="text" id="src-journal" placeholder="e.g., Journal of Marriage and Family">
+      <p class="hint">Include volume, issue, and pages if you have them.</p>
+
+      <label>Assign to Theme</label>
+      <select id="src-theme">
+        <option value="">No theme yet</option>
+      </select>
+
+      <label>How does this source fit your argument?</label>
+      <textarea id="src-note" rows="3" placeholder="e.g., Supports my claim that attachment anxiety predicts relationship dissatisfaction in couples with young children."></textarea>
+
+      <label>Key Finding (one sentence)</label>
+      <input type="text" id="src-finding" placeholder="e.g., Attachment anxiety significantly predicted lower relationship satisfaction (r = .42).">
+
+      <button class="btn" onclick="addSource()">Add Source</button>
+    </div>
+
+    <div class="card">
+      <p class="card-title">Your Sources <span id="source-count-badge" class="badge badge-red">0 of 10 minimum</span></p>
+      <p class="card-sub">Click a source to edit it. Drag to reorder within a theme.</p>
+      <div id="source-list"><div class="empty-state">No sources added yet. Add your first source above.</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── TAB 2: THEMES ── -->
+<div class="tab-content" id="tab-themes">
+  <div class="container">
+
+    <div class="card">
+      <p class="card-title">Define Your Themes</p>
+      <p class="card-sub">A literature review is organized around themes, not individual articles. Name up to 5 themes. Each theme becomes a section of your review.</p>
+
+      <label>Theme Name</label>
+      <input type="text" id="theme-name" placeholder="e.g., Attachment Theory and Relationship Quality">
+      <label>What argument does this theme make?</label>
+      <textarea id="theme-argument" rows="3" placeholder="e.g., Research consistently shows that attachment insecurity, particularly anxious attachment, is associated with lower relationship satisfaction across multiple populations."></textarea>
+      <label>What gap or transition does this theme set up?</label>
+      <input type="text" id="theme-gap" placeholder="e.g., However, most studies have focused on non-clinical samples, leaving a gap for...">
+
+      <button class="btn" onclick="addTheme()">Add Theme</button>
+    </div>
+
+    <div class="card">
+      <p class="card-title">Your Themes</p>
+      <div id="theme-list"><div class="empty-state">No themes defined yet. Add your first theme above.</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── TAB 3: OUTLINE ── -->
+<div class="tab-content" id="tab-outline">
+  <div class="container">
+
+    <div class="card">
+      <p class="card-title">Build Your Outline</p>
+      <p class="card-sub">Fill in the fields below, then generate a structured outline you can use as your writing scaffold. Copy it into a Word document and expand from there.</p>
+
+      <label>Research Topic (one sentence)</label>
+      <input type="text" id="ol-topic" placeholder="e.g., The relationship between attachment anxiety and relationship satisfaction in couples with young children.">
+
+      <label>Why Does This Topic Matter? (one to two sentences)</label>
+      <textarea id="ol-why" rows="2" placeholder="e.g., Relationship dissatisfaction is a leading predictor of divorce, which has documented negative effects on children's development."></textarea>
+
+      <label>What Gap Does the Literature Reveal?</label>
+      <textarea id="ol-gap" rows="2" placeholder="e.g., Despite extensive research on attachment in adults, few studies have examined how parenting stress moderates the attachment-satisfaction link."></textarea>
+
+      <label>Your Research Question or Purpose Statement</label>
+      <input type="text" id="ol-rq" placeholder="e.g., The purpose of this study is to examine...">
+
+      <button class="btn btn-gold" onclick="generateOutline()">Generate My Outline</button>
+    </div>
+
+    <div id="outline-output" style="display:none;">
+      <div class="card">
+        <p class="card-title">Your Literature Review Outline</p>
+        <p class="card-sub">Use this as your writing scaffold. Each section corresponds to a paragraph block in your review.</p>
+        <div id="outline-content"></div>
+        <hr class="divider">
+        <button class="btn btn-secondary" onclick="copyOutline()">Copy to Clipboard</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── TAB 4: PROGRESS ── -->
+<div class="tab-content" id="tab-progress">
+  <div class="container">
+
+    <div class="card">
+      <p class="card-title">Literature Review Progress</p>
+      <p class="card-sub">Track where you are against the submission requirements.</p>
+
+      <div class="progress-row">
+        <span class="progress-label-txt">Sources collected</span>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="pb-sources" style="width:0%"></div></div>
+        <span class="progress-num" id="pn-sources">0/10</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label-txt">Themes defined</span>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="pb-themes" style="width:0%"></div></div>
+        <span class="progress-num" id="pn-themes">0/3</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label-txt">Sources assigned</span>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="pb-assigned" style="width:0%"></div></div>
+        <span class="progress-num" id="pn-assigned">0%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label-txt">Outline generated</span>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="pb-outline" style="width:0%"></div></div>
+        <span class="progress-num" id="pn-outline">No</span>
+      </div>
+
+      <hr class="divider">
+
+      <p class="card-title" style="margin-bottom:12px;">Readiness Check</p>
+      <div id="readiness-list"></div>
+    </div>
+
+    <div class="card">
+      <p class="card-title">Winchester and Salji Checklist</p>
+      <p class="card-sub">Before you submit, confirm your literature review meets these standards.</p>
+      <ul id="ws-checklist" style="list-style:none;padding:0;margin:0;font-size:14px;line-height:2;">
+        <li onclick="toggleWS(this)" style="cursor:pointer;padding:6px 0;border-bottom:1px solid #f0ece8;">&#9744;&nbsp; Organized around themes, not individual articles</li>
+        <li onclick="toggleWS(this)" style="cursor:pointer;padding:6px 0;border-bottom:1px solid #f0ece8;">&#9744;&nbsp; Each paragraph advances an argument, not just describes a study</li>
+        <li onclick="toggleWS(this)" style="cursor:pointer;padding:6px 0;border-bottom:1px solid #f0ece8;">&#9744;&nbsp; At least 10 peer reviewed sources cited</li>
+        <li onclick="toggleWS(this)" style="cursor:pointer;padding:6px 0;border-bottom:1px solid #f0ece8;">&#9744;&nbsp; Sources are synthesized and connected, not summarized one by one</li>
+        <li onclick="toggleWS(this)" style="cursor:pointer;padding:6px 0;border-bottom:1px solid #f0ece8;">&#9744;&nbsp; Final paragraph identifies the gap your study will address</li>
+        <li onclick="toggleWS(this)" style="cursor:pointer;padding:6px 0;border-bottom:1px solid #f0ece8;">&#9744;&nbsp; APA 7th edition citations throughout</li>
+        <li onclick="toggleWS(this)" style="cursor:pointer;padding:6px 0;border-bottom:1px solid #f0ece8;">&#9744;&nbsp; 4 to 5 pages not counting references</li>
+        <li onclick="toggleWS(this)" style="cursor:pointer;padding:6px 0;">&#9744;&nbsp; Graduate level prose with clear transitions between sections</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADD SOURCE MODAL (edit) -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <p class="modal-title">Edit Source</p>
+    <input type="hidden" id="edit-idx">
+    <label>Author(s) and Year</label>
+    <input type="text" id="edit-author">
+    <label>Article Title</label>
+    <input type="text" id="edit-title">
+    <label>Journal</label>
+    <input type="text" id="edit-journal">
+    <label>Theme</label>
+    <select id="edit-theme"></select>
+    <label>How it fits your argument</label>
+    <textarea id="edit-note" rows="3"></textarea>
+    <label>Key Finding</label>
+    <input type="text" id="edit-finding">
+    <div class="modal-actions">
+      <button class="btn" onclick="saveEdit()">Save Changes</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────
+let sources = JSON.parse(localStorage.getItem('litrev_sources') || '[]');
+let themes = JSON.parse(localStorage.getItem('litrev_themes') || '[]');
+let outlineGenerated = localStorage.getItem('litrev_outline') === 'true';
+
+const THEME_COLORS = ['#811429','#1a5c9b','#1a7a3a','#9b4b1a','#6a1a9b'];
+
+function save() {
+  localStorage.setItem('litrev_sources', JSON.stringify(sources));
+  localStorage.setItem('litrev_themes', JSON.stringify(themes));
+  localStorage.setItem('litrev_outline', outlineGenerated);
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'progress') updateProgress();
+}
+
+// ── THEMES ────────────────────────────────────────────────────────────
+function addTheme() {
+  const name = document.getElementById('theme-name').value.trim();
+  const arg = document.getElementById('theme-argument').value.trim();
+  const gap = document.getElementById('theme-gap').value.trim();
+  if (!name) { alert('Please enter a theme name.'); return; }
+  if (themes.length >= 5) { alert('Maximum 5 themes.'); return; }
+  themes.push({ name, arg, gap, id: Date.now() });
+  save();
+  document.getElementById('theme-name').value = '';
+  document.getElementById('theme-argument').value = '';
+  document.getElementById('theme-gap').value = '';
+  renderThemes();
+  renderThemeSelects();
+}
+
+function renderThemes() {
+  const el = document.getElementById('theme-list');
+  if (!themes.length) { el.innerHTML = '<div class="empty-state">No themes defined yet.</div>'; return; }
+  el.innerHTML = themes.map((t, i) => {
+    const mySources = sources.filter(s => s.theme === t.id.toString());
+    return `<div class="theme-item">
+      <div class="theme-header" onclick="toggleTheme(${i})">
+        <div class="theme-color-dot" style="background:${THEME_COLORS[i % 5]}"></div>
+        <span class="theme-name">${t.name}</span>
+        <span class="theme-count">${mySources.length} source${mySources.length !== 1 ? 's' : ''}</span>
+        <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteTheme(${i})">Remove</button>
+      </div>
+      <div class="theme-body" id="theme-body-${i}">
+        ${t.arg ? `<p style="font-size:13px;color:#3a3a3a;margin:0 0 10px 0;"><strong>Argument:</strong> ${t.arg}</p>` : ''}
+        ${t.gap ? `<p style="font-size:13px;color:#666666;margin:0 0 12px 0;font-style:italic;"><strong>Gap/Transition:</strong> ${t.gap}</p>` : ''}
+        <div class="theme-sources">
+          ${mySources.length ? mySources.map(s => `<span class="theme-source-chip">${s.author}</span>`).join('') : '<span style="font-size:12px;color:#aaa;">No sources assigned yet</span>'}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleTheme(i) {
+  const body = document.getElementById('theme-body-' + i);
+  body.classList.toggle('open');
+}
+
+function deleteTheme(i) {
+  if (!confirm('Remove this theme? Sources assigned to it will become unassigned.')) return;
+  const tid = themes[i].id.toString();
+  sources = sources.map(s => s.theme === tid ? {...s, theme: ''} : s);
+  themes.splice(i, 1);
+  save();
+  renderThemes();
+  renderSources();
+  renderThemeSelects();
+}
+
+function renderThemeSelects() {
+  const opts = '<option value="">No theme yet</option>' + themes.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+  document.getElementById('src-theme').innerHTML = opts;
+  document.getElementById('edit-theme').innerHTML = opts;
+}
+
+// ── SOURCES ───────────────────────────────────────────────────────────
+function addSource() {
+  const author = document.getElementById('src-author').value.trim();
+  const title = document.getElementById('src-title').value.trim();
+  if (!author || !title) { alert('Please enter at least the author and title.'); return; }
+  sources.push({
+    author,
+    title,
+    journal: document.getElementById('src-journal').value.trim(),
+    theme: document.getElementById('src-theme').value,
+    note: document.getElementById('src-note').value.trim(),
+    finding: document.getElementById('src-finding').value.trim(),
+    id: Date.now()
+  });
+  save();
+  ['src-author','src-title','src-journal','src-note','src-finding'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('src-theme').value = '';
+  renderSources();
+  renderThemes();
+  updateSourceBadge();
+}
+
+function renderSources() {
+  const el = document.getElementById('source-list');
+  if (!sources.length) { el.innerHTML = '<div class="empty-state">No sources added yet.</div>'; return; }
+  el.innerHTML = sources.map((s, i) => {
+    const themeObj = themes.find(t => t.id.toString() === s.theme);
+    const themeIdx = themeObj ? themes.indexOf(themeObj) : -1;
+    const themeColor = themeIdx >= 0 ? THEME_COLORS[themeIdx % 5] : '#cccccc';
+    const themeLabel = themeObj ? themeObj.name : 'Unassigned';
+    return `<div class="source-item">
+      <div class="source-actions">
+        <button class="btn btn-secondary btn-sm" onclick="openEdit(${i})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSource(${i})">Remove</button>
+      </div>
+      <p class="source-title">${s.title}</p>
+      <p class="source-meta">${s.author}${s.journal ? ' &mdash; ' + s.journal : ''}</p>
+      <span class="source-theme" style="background:${themeColor}">${themeLabel}</span>
+      ${s.finding ? `<p style="font-size:12px;color:#666666;margin:8px 0 0 0;font-style:italic;">"${s.finding}"</p>` : ''}
+    </div>`;
+  }).join('');
+  updateSourceBadge();
+}
+
+function deleteSource(i) {
+  sources.splice(i, 1);
+  save();
+  renderSources();
+  renderThemes();
+}
+
+function updateSourceBadge() {
+  const n = sources.length;
+  const badge = document.getElementById('source-count-badge');
+  if (n >= 10) {
+    badge.className = 'badge badge-green';
+    badge.textContent = n + ' sources';
+  } else {
+    badge.className = 'badge badge-red';
+    badge.textContent = n + ' of 10 minimum';
+  }
+}
+
+// ── EDIT MODAL ────────────────────────────────────────────────────────
+function openEdit(i) {
+  const s = sources[i];
+  document.getElementById('edit-idx').value = i;
+  document.getElementById('edit-author').value = s.author;
+  document.getElementById('edit-title').value = s.title;
+  document.getElementById('edit-journal').value = s.journal || '';
+  document.getElementById('edit-note').value = s.note || '';
+  document.getElementById('edit-finding').value = s.finding || '';
+  renderThemeSelects();
+  document.getElementById('edit-theme').value = s.theme || '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function saveEdit() {
+  const i = parseInt(document.getElementById('edit-idx').value);
+  sources[i] = {
+    ...sources[i],
+    author: document.getElementById('edit-author').value.trim(),
+    title: document.getElementById('edit-title').value.trim(),
+    journal: document.getElementById('edit-journal').value.trim(),
+    theme: document.getElementById('edit-theme').value,
+    note: document.getElementById('edit-note').value.trim(),
+    finding: document.getElementById('edit-finding').value.trim()
+  };
+  save();
+  closeModal();
+  renderSources();
+  renderThemes();
+}
+
+function closeModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+// ── OUTLINE ───────────────────────────────────────────────────────────
+function generateOutline() {
+  const topic = document.getElementById('ol-topic').value.trim();
+  const why = document.getElementById('ol-why').value.trim();
+  const gap = document.getElementById('ol-gap').value.trim();
+  const rq = document.getElementById('ol-rq').value.trim();
+
+  if (!topic) { alert('Please enter your research topic.'); return; }
+
+  const themeBlocks = themes.length
+    ? themes.map((t, i) => {
+        const mySources = sources.filter(s => s.theme === t.id.toString());
+        return `<div class="outline-section" style="border-left-color:${THEME_COLORS[i % 5]}">
+          <p class="outline-section-title">Theme ${i+1}: ${t.name}</p>
+          <div class="outline-content">${t.arg ? 'Central argument: ' + t.arg + '\n\n' : ''}Sources for this section: ${mySources.length ? mySources.map(s => s.author).join('; ') : '(none assigned yet)'}${t.gap ? '\n\nTransition/Gap: ' + t.gap : ''}</div>
+        </div>`;
+      }).join('')
+    : '<p style="font-size:13px;color:#999;">No themes defined yet. Add themes in the Themes tab first.</p>';
+
+  document.getElementById('outline-content').innerHTML = `
+    <div class="outline-section">
+      <p class="outline-section-title">Introduction</p>
+      <div class="outline-content">Topic: ${topic}\n\nSignificance: ${why || '(add in the Why field)'}</div>
+    </div>
+    ${themeBlocks}
+    <div class="outline-section" style="border-left-color:#c9a84c;">
+      <p class="outline-section-title">Gap and Purpose</p>
+      <div class="outline-content">${gap || '(describe the gap your study addresses)'}\n\n${rq || '(your research question or purpose statement)'}</div>
+    </div>
+  `;
+
+  document.getElementById('outline-output').style.display = 'block';
+  outlineGenerated = true;
+  save();
+}
+
+function copyOutline() {
+  const text = document.getElementById('outline-content').innerText;
+  navigator.clipboard.writeText(text).then(() => alert('Outline copied to clipboard.')).catch(() => alert('Copy failed. Select the text manually.'));
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────
+function updateProgress() {
+  const srcN = sources.length;
+  const thmN = themes.length;
+  const assigned = sources.filter(s => s.theme).length;
+  const assignedPct = srcN > 0 ? Math.round((assigned / srcN) * 100) : 0;
+
+  setProgress('pb-sources', 'pn-sources', Math.min(srcN / 10 * 100, 100), srcN + '/10');
+  setProgress('pb-themes', 'pn-themes', Math.min(thmN / 3 * 100, 100), thmN + '/3');
+  setProgress('pb-assigned', 'pn-assigned', assignedPct, assignedPct + '%');
+  setProgress('pb-outline', 'pn-outline', outlineGenerated ? 100 : 0, outlineGenerated ? 'Yes' : 'No');
+
+  const checks = [
+    { label: 'At least 10 sources added', ok: srcN >= 10 },
+    { label: 'At least 3 themes defined', ok: thmN >= 3 },
+    { label: 'All sources assigned to a theme', ok: srcN > 0 && assigned === srcN },
+    { label: 'Outline generated', ok: outlineGenerated },
+  ];
+
+  document.getElementById('readiness-list').innerHTML = checks.map(c =>
+    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0ece8;font-size:13px;">
+      <span style="color:${c.ok ? '#1a7a3a' : '#cc4444'};font-size:16px;">${c.ok ? '✓' : '✗'}</span>
+      <span style="color:${c.ok ? '#1a1a1a' : '#666666'};">${c.label}</span>
+    </div>`
+  ).join('');
+}
+
+function setProgress(barId, numId, pct, label) {
+  document.getElementById(barId).style.width = pct + '%';
+  document.getElementById(numId).textContent = label;
+}
+
+// ── CHECKLIST ─────────────────────────────────────────────────────────
+function toggleWS(li) {
+  const checked = li.textContent.startsWith('☑');
+  li.innerHTML = li.innerHTML.replace(checked ? '&#9745;' : '&#9744;', checked ? '&#9744;' : '&#9745;');
+  li.style.textDecoration = checked ? 'none' : 'line-through';
+  li.style.color = checked ? '#3a3a3a' : '#999999';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+renderSources();
+renderThemes();
+renderThemeSelects();
+updateSourceBadge();
+</script>
+
+</body>
+</html>
